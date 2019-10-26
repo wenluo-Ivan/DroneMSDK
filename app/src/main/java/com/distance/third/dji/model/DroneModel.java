@@ -14,6 +14,7 @@ import com.distance.third.dji.util.FileUtils;
 import com.distance.third.dji.util.HandlerUtils;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import dji.common.camera.ResolutionAndFrameRate;
@@ -45,7 +46,8 @@ public class DroneModel {
     private Camera airPlaneCamera;
     private DJIProductStateCallBack djiProductStateCallBack;
     private VideoFeeder.VideoDataListener receviedVideoDataListener = null;
-    private DJIVideoDataCallBack djiVideoDataCallBack;
+    private DroneH264VideoDataCallBack droneH264VideoDataCallBack;
+    private DroneYUVDataCallBack droneYUVDataCallBack;
     private static DroneModel djiInstance;
     private SurfaceHolder.Callback surfaceCallback;
     private DJICodecManager codecManager;
@@ -75,8 +77,12 @@ public class DroneModel {
         this.djiProductStateCallBack = djiProductStateCallBack;
     }
 
-    public void setDjiVideoDataCallBack(DJIVideoDataCallBack djiVideoDataCallBack) {
-        this.djiVideoDataCallBack = djiVideoDataCallBack;
+    public void setDjiVideoDataCallBack(DroneH264VideoDataCallBack djiVideoDataCallBack) {
+        this.droneH264VideoDataCallBack = djiVideoDataCallBack;
+    }
+
+    public void setDroneYUVDataCallBack(DroneYUVDataCallBack droneYUVDataCallBack) {
+        this.droneYUVDataCallBack = droneYUVDataCallBack;
     }
 
     /**
@@ -138,6 +144,24 @@ public class DroneModel {
         };
         surfaceHolder.addCallback(surfaceCallback);
     }
+
+    public void setReceviedYuvData(boolean isEnable) {
+        if (codecManager != null) {
+            if (isEnable) {
+                codecManager.enabledYuvData(true);
+                codecManager.setYuvDataCallback((final ByteBuffer yuvFrame, int dataSize, final int width, final
+                int height) -> {
+                    if (droneYUVDataCallBack != null) {
+                        droneYUVDataCallBack.onReceviedYUVData(yuvFrame, dataSize, width, height);
+                    }
+                });
+            } else {
+                codecManager.enabledYuvData(false);
+                codecManager.setYuvDataCallback(null);
+            }
+        }
+    }
+
 
     /**
      * 注册大疆SDK，如果不执行注册，则无法使用大疆的任何接口数据
@@ -236,8 +260,8 @@ public class DroneModel {
         final BaseProduct product = MainApplication.getProductInstance();
         receviedVideoDataListener = (videoBuffer, size) -> {
             Log.d(TAG, "camera recv video data size: " + size);
-            if (djiVideoDataCallBack != null) {
-                djiVideoDataCallBack.onReceviedVideoData(videoBuffer, size);
+            if (droneH264VideoDataCallBack != null) {
+                droneH264VideoDataCallBack.onReceviedVideoData(videoBuffer, size);
             }
         };
         if (null == product || !product.isConnected()) {
@@ -285,7 +309,11 @@ public class DroneModel {
     /**
      * 大疆无人机H264视频数据回调
      */
-    public interface DJIVideoDataCallBack {
+    public interface DroneH264VideoDataCallBack {
         void onReceviedVideoData(byte[] videoBuffer, int size);
+    }
+
+    public interface DroneYUVDataCallBack {
+        void onReceviedYUVData(ByteBuffer yuvFrame, int dataSize, int width, int height);
     }
 }

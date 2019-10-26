@@ -1,9 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+    android:orientation="vertical">
+
     <FrameLayout
         android:id="@+id/fl_dji_preview"
+        android:layout_weight="5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
-</RelativeLayout>
+        android:layout_height="0dp"
+      />
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_shoot_pic"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_background_blue"
+            android:paddingBottom="10dp"
+            android:text="截图"
+            android:textColor="@android:color/black"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btn_surface_preview"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_background_blue"
+            android:paddingBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:text="预览"
+            android:textColor="@android:color/black"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

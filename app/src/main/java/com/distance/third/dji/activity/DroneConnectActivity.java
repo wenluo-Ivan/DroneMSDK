@@ -1,7 +1,6 @@
 package com.distance.third.dji.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.usb.UsbManager;
@@ -11,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +41,7 @@ import dji.sdk.sdkmanager.DJISDKManager;
  * @date 2019/10/26
  * @desc 无人机连接页面
  */
-public class DroneConnectActivity extends Activity  implements View.OnClickListener, DroneModel.DJIProductStateCallBack {
+public class DroneConnectActivity extends AppCompatActivity implements View.OnClickListener, DroneModel.DJIProductStateCallBack {
 
     @BindView(R.id.text_connection_status)
     TextView textConnectionStatus;
